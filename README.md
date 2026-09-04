@@ -114,3 +114,16 @@ can flash briefly.
 Failures are logged. The service worker's console (`edge://extensions` → Segue →
 **Service worker**) shows which window a name resolved to; a page's own console
 shows only whether an Alt-click failed to reach the service worker.
+
+## Publishing
+
+The extension is meant for the Edge Add-ons store, which is the only way to
+install it without *Load unpacked* on every machine.
+
+- `build.ps1` writes the store package to `dist\segue-<version>.zip` (the
+  version is read from `manifest.json`; nothing but the extension files goes
+  in).
+- `tools\Make-Icons.ps1` regenerates `icons\` and `store\logo-300.png`.
+- `docs\store-listing.md` holds the listing texts, the permission
+  justifications for the reviewers and the submission checklist;
+  `PRIVACY.md` is the privacy statement the listing links to.
