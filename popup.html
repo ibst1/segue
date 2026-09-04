@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font: 13px "Segoe UI", system-ui, sans-serif; margin: 0; padding: 12px;
+           width: 268px; background: #1f1f1f; color: #e6e6e6; }
+    h1 { font-size: 13px; margin: 0 0 8px; font-weight: 600; }
+    p { margin: 0 0 10px; font-size: 11px; line-height: 1.5; color: #9a9a9a; }
+    input[type=text] { width: 100%; box-sizing: border-box; font: inherit;
+      padding: 5px 7px; background: #141414; color: #e6e6e6;
+      border: 1px solid #3a3a3a; border-radius: 3px; }
+    .row { display: flex; gap: 6px; margin-top: 9px; }
+    button { font: inherit; padding: 4px 10px; border-radius: 3px; cursor: pointer;
+      background: #2d2d2d; color: #e6e6e6; border: 1px solid #3a3a3a; }
+    button.primary { background: #0f6cbd; border-color: #0f6cbd; color: #fff; }
+    button:hover { border-color: #6a6a6a; }
+    hr { border: 0; border-top: 1px solid #3a3a3a; margin: 14px 0 11px; }
+    .alt { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+    .alt input { margin: 0; }
+    #target { font-size: 11px; color: #9a9a9a; margin-top: 7px; min-height: 14px; }
+    #target b { color: #e6e6e6; font-weight: 600; }
+    a { color: #6aa9e0; font-size: 11px; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Name this window</h1>
+  <p>Shown in the "Send link to window" menu. Left empty, the window is listed
+     by the title of its active tab. Names last until Edge is closed, because
+     the window ids they belong to do not outlive it either.</p>
+  <input id="name" type="text" placeholder="e.g. Reading" autofocus>
+  <hr>
+
+  <label class="alt">
+    <input id="isTarget" type="checkbox">
+    Alt-click sends links here
+  </label>
+  <div id="target"></div>
+  <p style="margin-top:9px">Both are saved together by the button below.
+     Alt-click any link to send it to that window without opening the menu;
+     Alt+Shift-click does the opposite of your defaults — background if
+     they switch, switch if they do not.</p>
+
+  <div class="row">
+    <button id="save" class="primary">Save</button>
+    <button id="clear">Clear</button>
+  </div>
+
+  <a id="opts" href="#" style="display:inline-block;margin-top:11px">More settings…</a>
+
+  <script src="popup.js"></script>
+</body>
+</html>

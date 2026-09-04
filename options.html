@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font: 13px "Segoe UI", system-ui, sans-serif; margin: 0; padding: 16px;
+           width: 400px; background: #1f1f1f; color: #e6e6e6; }
+    h1 { font-size: 14px; margin: 0 0 4px; font-weight: 600; }
+    h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
+         color: #9a9a9a; margin: 18px 0 6px; padding-bottom: 3px;
+         border-bottom: 1px solid #3a3a3a; }
+    .row { margin: 0 0 4px; display: flex; align-items: center; gap: 8px; }
+    .row label { flex: 1; }
+    p.help { margin: 0 0 12px; font-size: 11px; line-height: 1.5; color: #9a9a9a; }
+    input[type=text] { width: 150px; font: inherit; padding: 4px 6px;
+      background: #141414; color: #e6e6e6; border: 1px solid #3a3a3a;
+      border-radius: 3px; }
+    #saved { font-size: 11px; color: #6ea86e; height: 14px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Segue</h1>
+  <p class="help">What happens by default when a link is sent to another
+    window. The menu's second entry, <b>and switch to it</b>, overrides both of
+    these for a single click, and Alt+Shift-click inverts them.</p>
+
+  <h2>Where the link lands</h2>
+
+  <div class="row">
+    <label for="activateTab">Select the new tab in its window</label>
+    <input id="activateTab" type="checkbox">
+  </div>
+  <p class="help">The tab becomes the active one in the target window, but that
+    window is not raised. Off, it opens behind the tabs already there.</p>
+
+  <div class="row">
+    <label for="focusWindow">Bring the target window to the front</label>
+    <input id="focusWindow" type="checkbox">
+  </div>
+  <p class="help">Off, the link waits for you in the other window &mdash; which
+    is usually the point of sending it there rather than opening it here.</p>
+
+  <h2>Alt-click</h2>
+
+  <div class="row">
+    <label for="quickTarget">Send links to the window named</label>
+    <input id="quickTarget" type="text" placeholder="window name">
+  </div>
+  <p class="help">Name a window with the toolbar button, then set it as the
+    target there or type the name here. If no window carries the name, one is
+    created and given it &mdash; so this keeps working after a restart, when
+    every window id has changed. Left empty, Alt-click just opens a new
+    window.</p>
+
+  <div class="row">
+    <label for="catchExternal">Catch links opened from other programs</label>
+    <input id="catchExternal" type="checkbox">
+  </div>
+  <p class="help">A link clicked in Word or Outlook lands in whichever Edge
+    window was focused last &mdash; nothing chooses it. With this on, such a tab
+    is moved to the window named above and brought to the front. It is
+    recognised by being active, having no opener and already carrying a real
+    address; a bookmark opened straight into the foreground can look the same
+    and would be moved too.</p>
+
+  <h2>Window title</h2>
+
+  <div class="row">
+    <label for="mirrorTitle">Show the window name in the title bar</label>
+    <input id="mirrorTitle" type="checkbox">
+  </div>
+  <p class="help">Appends <b>[Name]</b> to the title of every tab in a named
+    window, which is what the title bar and the taskbar show. This is the only
+    way a name set here reaches anything outside the browser &mdash; with it on,
+    a script can find the window by that name. At the end rather than the front
+    so that a narrow or vertical tab list truncates the name away instead of the
+    page title. Pages where extensions cannot run (<code>edge://</code>, the new
+    tab page, PDFs) keep their own title.</p>
+
+  <div class="row">
+    <label for="urlMode">Show the address too</label>
+    <select id="urlMode">
+      <option value="off">no</option>
+      <option value="host">site only</option>
+      <option value="full">full address</option>
+    </select>
+  </div>
+  <p class="help">Puts the address in the title as well, before the name, so
+    that the name &mdash; the part you match on &mdash; is the last to be
+    truncated. Needs the switch above. Turn off any other extension that writes
+    the address into the title: two of them append to the same string without
+    knowing about each other, and the title grows a copy at a time.</p>
+
+  <h2>Menu</h2>
+
+  <div class="row">
+    <label for="showDetails">Show window id and size in the menu</label>
+    <input id="showDetails" type="checkbox">
+  </div>
+  <p class="help">Useful to tell two windows apart when their tab titles read
+    alike.</p>
+
+  <div id="saved"></div>
+  <script src="options.js"></script>
+</body>
+</html>
