@@ -28,10 +28,13 @@ A new version is the same form with a new package: bump `version` in
 
 ### Privacy policy URL
 
-Partner Center requires a public URL. `PRIVACY.md` in this repository is the
-text; the repository is private, so publish the text somewhere reachable
-without sign-in — a public gist, GitHub Pages on a public repo, or a page on a
-personal site — and paste that address.
+Partner Center requires a public URL. The repository is public, so
+`PRIVACY.md` serves directly:
+
+    https://github.com/ibst1/segue/blob/main/PRIVACY.md
+
+The same address goes in the *Support* / *Website* fields if nothing better
+exists.
 
 ## Listing texts
 
