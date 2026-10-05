@@ -4,7 +4,7 @@
 # rejects nothing for extra files, but the package is what gets reviewed and
 # should be exactly what runs.
 #
-#   .\build.ps1            -> dist\segue-1.2.0.zip
+#   .\build.ps1            -> dist\segue-1.3.0.zip
 #   .\build.ps1 -Open      -> ... and open the dist folder
 
 param([switch]$Open)

@@ -1,6 +1,7 @@
 const DEFAULTS = {
   activateTab: false, focusWindow: false, showDetails: false, quickTarget: '',
-  mirrorTitle: false, catchExternal: false, urlMode: 'off'
+  mirrorTitle: false, catchExternal: false, urlMode: 'off',
+  markPopup: false
 };
 
 const el = id => document.getElementById(id);
@@ -18,6 +19,7 @@ function flash(text) {
   el('mirrorTitle').checked = !!o.mirrorTitle;
   el('catchExternal').checked = !!o.catchExternal;
   el('urlMode').value = o.urlMode || 'off';
+  el('markPopup').checked = !!o.markPopup;
   el('quickTarget').value = o.quickTarget || '';
 
   // Saved as they change: an options page with four fields and a Save button
@@ -30,13 +32,14 @@ function flash(text) {
       mirrorTitle: el('mirrorTitle').checked,
       catchExternal: el('catchExternal').checked,
       urlMode: el('urlMode').value,
+      markPopup: el('markPopup').checked,
       quickTarget: el('quickTarget').value.trim()
     });
     flash('Saved');
   };
 
   for (const id of ['activateTab', 'focusWindow', 'showDetails', 'mirrorTitle',
-                    'catchExternal', 'urlMode', 'quickTarget'])
+                    'catchExternal', 'urlMode', 'markPopup', 'quickTarget'])
     el(id).addEventListener('change', save);
   el('quickTarget').addEventListener('blur', save);
 })();

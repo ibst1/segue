@@ -55,6 +55,11 @@ h := WinExist("[Reading] ahk_class Chrome_WidgetWin_1")
 Pages where extensions cannot run (`edge://`, the new tab page, PDFs) keep their
 own title.
 
+**Mark popup windows with (Popup)** adds `(Popup)` to the title of pages in a
+popup window — one without tabs or an address bar — so that it can be told
+apart from a normal window in the taskbar. It has a switch of its own and works
+without the one above.
+
 **Move this tab to window** appears on right-clicking the page rather than a
 link, and lists the same named windows — which is the difference from Edge's own
 "Move tab to", where the windows are bare numbers. `Alt+Shift+Right` and

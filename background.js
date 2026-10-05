@@ -24,6 +24,7 @@ const DEFAULTS = {
   quickTarget: '',      // window name that Alt-click sends links to
   mirrorTitle: false,   // put the name into the tab title, and so the window title
   urlMode: 'off',       // also show the address there: "off" | "host" | "full"
+  markPopup: false,     // add "(Popup)" to the title of tabs in popup windows
   catchExternal: false  // move links opened from other programs to quickTarget
 };
 
@@ -307,9 +308,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     (async () => {
       const [names, o] = await Promise.all([loadNames(), getOptions()]);
       const id = sender.tab && sender.tab.windowId;
+      let popup = false;
+      if (o.markPopup && id) {
+        try { popup = (await chrome.windows.get(id)).type === 'popup'; }
+        catch { /* window gone already */ }
+      }
       sendResponse({
         name: o.mirrorTitle && id ? (names[String(id)] || '') : '',
-        urlMode: o.mirrorTitle ? o.urlMode : 'off'
+        urlMode: o.mirrorTitle ? o.urlMode : 'off',
+        popup
       });
     })();
     return true;
@@ -345,23 +352,32 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // tab list truncates it away and leaves the page title readable.
 async function syncTitles() {
   const [names, o] = await Promise.all([loadNames(), getOptions()]);
-  let tabs = [];
+  // Popups are included so that they can be marked as such. Windows are
+  // queried rather than tabs because a tab does not say what kind of window
+  // holds it.
+  let windows = [];
   try {
-    tabs = await chrome.tabs.query({ windowType: 'normal' });
+    windows = await chrome.windows.getAll({ populate: true,
+      windowTypes: ['normal', 'popup'] });
   } catch {
     return;
   }
-  for (const t of tabs) {
+  for (const w of windows) {
     // The URL is shown independently of whether the window has a name, but
-    // both are governed by the same master switch.
-    const name = o.mirrorTitle ? (names[String(t.windowId)] || '') : '';
-    try {
-      // An empty name clears a prefix left behind, so turning the option off,
-      // renaming a window or moving a tab out of one does not strand the old
-      // text in the title.
-      chrome.tabs.sendMessage(t.id, { action: 'setTag', name, urlMode: o.urlMode },
-        () => void chrome.runtime.lastError);   // no content script here: fine
-    } catch { /* ditto */ }
+    // both are governed by the same master switch. The popup mark has a
+    // switch of its own.
+    const name = o.mirrorTitle ? (names[String(w.id)] || '') : '';
+    const urlMode = o.mirrorTitle ? o.urlMode : 'off';
+    const popup = !!o.markPopup && w.type === 'popup';
+    for (const t of w.tabs || []) {
+      try {
+        // An empty name clears a suffix left behind, so turning the option
+        // off, renaming a window or moving a tab out of one does not strand
+        // the old text in the title.
+        chrome.tabs.sendMessage(t.id, { action: 'setTag', name, urlMode, popup },
+          () => void chrome.runtime.lastError);   // no content script here: fine
+      } catch { /* ditto */ }
+    }
   }
 }
 

@@ -40,7 +40,7 @@ document.addEventListener('click', (e) => {
 // ── Mirroring the window name into the title ────────────────────────────────
 // Everything Segue adds goes at the END of the title, as
 //
-//     <the page's own title>  <url>  [Window name]
+//     <the page's own title> (Popup) <url> [Window name]
 //
 // In front reads better in a taskbar, which truncates from the right - but it
 // ruins a vertical tab list, where every tab is cut short and so every one of
@@ -53,18 +53,30 @@ document.addEventListener('click', (e) => {
 // identity, is the first thing to survive truncation.
 let name = '';          // window name, "" when not mirroring
 let urlMode = 'off';    // "off" | "host" | "full"
+let popup = false;      // this tab sits in a popup window and should say so
 let applied = '';       // exactly what we appended last time
 let observer = null;
 
 // What we want on the end right now. Recomputed rather than remembered because
 // the URL changes under us on sites that navigate without reloading.
+//
+// Single spaces between the parts, because that is all that survives:
+// document.title collapses runs of whitespace on the way out, so two spaces
+// written are one space read back.
 function suffix() {
   const parts = [];
+  if (popup) parts.push(POPUP_TAG);
   if (urlMode === 'host') parts.push(location.host);
   else if (urlMode === 'full') parts.push(location.href);
   if (name) parts.push('[' + name + ']');
-  return parts.length ? '  ' + parts.join('  ') : '';
+  return parts.length ? ' ' + parts.join(' ') : '';
 }
+
+const POPUP_TAG = '(Popup)';
+
+// What document.title gives back for a string written to it: whitespace
+// stripped at the ends and collapsed inside.
+const norm = (t) => t.replace(/\s+/g, ' ').trim();
 
 // The page's own title, with everything we added taken out - both what we
 // appended last time and any copy of the name tag, wherever it sits.
@@ -79,11 +91,23 @@ function suffix() {
 // Deriving the base rather than remembering it is still what lets a page that
 // legitimately rewrites its title - a mail client counting unread, a player
 // naming the track - be followed correctly.
+//
+// Both sides are normalised before comparing. The title read back is never
+// byte-for-byte what was written - the browser collapses whitespace - and
+// matching the raw string is what let the address pile up: the strip found
+// nothing, so every pass appended another copy.
 function bare(t) {
-  let out = t;
-  if (applied) out = out.split(applied).join('');
-  if (name) out = out.split('[' + name + ']').join('');
-  return out.replace(/\s{2,}/g, ' ').trim();
+  let out = ' ' + norm(t) + ' ';
+  const cut = (piece) => {
+    const p = norm(piece);
+    if (p) out = out.split(' ' + p + ' ').join(' ');
+  };
+  // the whole suffix first, then its pieces on their own in case something
+  // else has wedged itself in between them
+  cut(applied);
+  if (popup) cut(POPUP_TAG);
+  if (name) cut('[' + name + ']');
+  return norm(out);
 }
 
 // A title this long is not a title. If something else is still appending on
@@ -107,8 +131,9 @@ function apply() {
   // a page with no title of its own must not end up called "  [Name]"
   const want = suf ? (base ? base + suf : suf.trim()) : base;
   applied = suf;
-  // idempotent, so the mutation this causes does not loop
-  if (document.title !== want) document.title = want;
+  // idempotent, so the mutation this causes does not loop - compared the way
+  // the browser will report it, or the two never match and it loops anyway
+  if (document.title !== norm(want)) document.title = want;
 }
 
 function watch() {
@@ -125,12 +150,14 @@ function watch() {
   addEventListener('hashchange', apply);
 }
 
-function configure(nextName, nextUrlMode) {
-  const changed = (nextName !== name) || (nextUrlMode !== urlMode);
+function configure(nextName, nextUrlMode, nextPopup) {
+  const changed = (nextName !== name) || (nextUrlMode !== urlMode)
+    || (nextPopup !== popup);
   if (!changed) return;
   const plain = bare(document.title);   // strip the OLD additions first
   name = nextName;
   urlMode = nextUrlMode;
+  popup = nextPopup;
   warned = false;
   const suf = suffix();
   applied = suf;
@@ -149,7 +176,7 @@ const TOP = (() => { try { return window.top === window; } catch { return false;
 chrome.runtime.onMessage.addListener((msg) => {
   if (!TOP) return;
   if (msg && msg.action === 'setTag')
-    configure(msg.name || '', msg.urlMode || 'off');
+    configure(msg.name || '', msg.urlMode || 'off', !!msg.popup);
 });
 
 // The service worker is asked on load: a tab that opens later has missed
@@ -159,7 +186,7 @@ function askForName() {
   try {
     chrome.runtime.sendMessage({ action: 'whatIsMyName' }, (reply) => {
       if (chrome.runtime.lastError) return;
-      if (reply) configure(reply.name || '', reply.urlMode || 'off');
+      if (reply) configure(reply.name || '', reply.urlMode || 'off', !!reply.popup);
     });
   } catch { /* service worker starting; the next broadcast will reach us */ }
 }
