@@ -107,7 +107,7 @@ exists.
 >
 > **Keyboard**: Alt+Shift+Left / Alt+Shift+Right move the current tab to the previous / next window.
 >
-> Options: select the new tab in its window, bring the target window to the front, show window ids and sizes in the menu, show the address next to the window name, and catch links opened from other programs so they land in the target window.
+> Options: select the new tab in its window, bring the target window to the front, show window ids and sizes in the menu, show the address next to the window name, catch links opened from other programs so they land in the target window, and keep such links in a window that already has their site open.
 >
 > Segue runs entirely inside the browser. It stores your settings and window names in the browser's own extension storage and sends nothing anywhere.
 

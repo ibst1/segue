@@ -1,7 +1,7 @@
 const DEFAULTS = {
   activateTab: false, focusWindow: false, showDetails: false, quickTarget: '',
   mirrorTitle: false, catchExternal: false, urlMode: 'off',
-  markPopup: false
+  markPopup: false, sameSite: false
 };
 
 const el = id => document.getElementById(id);
@@ -18,6 +18,7 @@ function flash(text) {
   el('showDetails').checked = !!o.showDetails;
   el('mirrorTitle').checked = !!o.mirrorTitle;
   el('catchExternal').checked = !!o.catchExternal;
+  el('sameSite').checked = !!o.sameSite;
   el('urlMode').value = o.urlMode || 'off';
   el('markPopup').checked = !!o.markPopup;
   el('quickTarget').value = o.quickTarget || '';
@@ -31,6 +32,7 @@ function flash(text) {
       showDetails: el('showDetails').checked,
       mirrorTitle: el('mirrorTitle').checked,
       catchExternal: el('catchExternal').checked,
+      sameSite: el('sameSite').checked,
       urlMode: el('urlMode').value,
       markPopup: el('markPopup').checked,
       quickTarget: el('quickTarget').value.trim()
@@ -39,7 +41,8 @@ function flash(text) {
   };
 
   for (const id of ['activateTab', 'focusWindow', 'showDetails', 'mirrorTitle',
-                    'catchExternal', 'urlMode', 'markPopup', 'quickTarget'])
+                    'catchExternal', 'sameSite', 'urlMode', 'markPopup',
+                    'quickTarget'])
     el(id).addEventListener('change', save);
   el('quickTarget').addEventListener('blur', save);
 })();

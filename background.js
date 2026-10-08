@@ -25,7 +25,8 @@ const DEFAULTS = {
   mirrorTitle: false,   // put the name into the tab title, and so the window title
   urlMode: 'off',       // also show the address there: "off" | "host" | "full"
   markPopup: false,     // add "(Popup)" to the title of tabs in popup windows
-  catchExternal: false  // move links opened from other programs to quickTarget
+  catchExternal: false, // move links opened from other programs to quickTarget
+  sameSite: false       // ...or to a window that already has a tab on that site
 };
 
 // Options persist across restarts (sync), names do not (session).
@@ -242,17 +243,27 @@ async function openInNamed(name, url, override) {
 // Together those are specific enough to be worth having, and the option is off
 // until asked for. Wrongly caught: a bookmark opened straight into the
 // foreground by some other route.
+//
+// Two ways to pick the window, tried in this order:
+//   - sameSite: a window that already has a tab on the same host. A script
+//     that opens one record after another in the same web app (LIMS assistant
+//     opening a sample in Scout) then keeps them together, wherever focus was.
+//   - catchExternal: the window named as the Alt-click target.
 chrome.tabs.onCreated.addListener(async (tab) => {
   const o = await getOptions();
-  if (!o.catchExternal || !o.quickTarget) return;
+  const byName = o.catchExternal && o.quickTarget;
+  if (!o.sameSite && !byName) return;
   if (tab.openerTabId !== undefined || !tab.active) return;
   const url = tab.pendingUrl || tab.url || '';
   if (!/^https?:/i.test(url)) return;
 
-  const names = await loadNames();
-  const target = Object.keys(names).find(id => names[id] === o.quickTarget);
-  if (!target) return;                       // no window carries the name
-  const targetId = Number(target);
+  let targetId = o.sameSite ? await windowWithSite(tab, url) : null;
+  if (targetId === null && byName) {
+    const names = await loadNames();
+    const target = Object.keys(names).find(id => names[id] === o.quickTarget);
+    if (target) targetId = Number(target);
+  }
+  if (targetId === null) return;             // nowhere better to put it
   if (tab.windowId === targetId) return;     // already where it belongs
 
   try {
@@ -265,6 +276,29 @@ chrome.tabs.onCreated.addListener(async (tab) => {
     console.warn('[Segue] could not move external tab:', err);
   }
 });
+
+// The window that already holds a tab on url's host, or null. The tab's own
+// window wins if it qualifies, so a link already beside its site stays put;
+// otherwise the window of the most recently used such tab.
+async function windowWithSite(tab, url) {
+  let host;
+  try { host = new URL(url).host.toLowerCase(); } catch { return null; }
+  let tabs = [];
+  try { tabs = await chrome.tabs.query({ windowType: 'normal' }); } catch { return null; }
+
+  let best = null;
+  for (const t of tabs) {
+    if (t.id === tab.id) continue;
+    let h;
+    try { h = new URL(t.pendingUrl || t.url || '').host.toLowerCase(); } catch { continue; }
+    if (h !== host) continue;
+    if (t.windowId === tab.windowId) return tab.windowId;
+    if (!best || (t.lastAccessed || 0) > (best.lastAccessed || 0)) best = t;
+  }
+  console.log('[Segue] same site', host, '->',
+    best ? 'window ' + best.windowId : 'no other window has it');
+  return best ? best.windowId : null;
+}
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const id = String(info.menuItemId);

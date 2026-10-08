@@ -78,6 +78,14 @@ Such a tab cannot be identified with certainty, so it is identified by shape: no
 bookmark opened straight into the foreground looks the same and would be moved
 too.
 
+**Keep links from other programs with their site** moves the same kind of tab
+to a window that already has a tab on the same host instead. A script that opens
+one record after another in a web app (`Run "http://scout/.../{SID}"` from
+LIMS assistant) then lands each one beside the others, whichever window had
+focus. If the tab's own window already has the site it stays; among several
+windows the one with the most recently used matching tab wins. With no match,
+*Catch links opened from other programs* applies if it is on.
+
 ## What it cannot do
 
 Edge's own **Name window** is invisible to it. `chrome.windows` gives a window's

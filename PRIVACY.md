@@ -8,7 +8,8 @@ window. It runs entirely inside your browser.
 ## What Segue stores
 
 - **Your settings** (the options page: select the new tab, bring the window to
-  the front, show details, address mode, catch external links) in the
+  the front, show details, address mode, catch external links, keep them with
+  their site) in the
   browser's synced extension storage, so they follow your browser profile.
 - **Window names** you give windows with the toolbar button, in the browser's
   session storage. They are discarded when the browser closes.
