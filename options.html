@@ -3,16 +3,20 @@
 <head>
   <meta charset="utf-8">
   <style>
-    body { font: 13px "Segoe UI", system-ui, sans-serif; margin: 0; padding: 16px;
-           width: 400px; background: #1f1f1f; color: #e6e6e6; }
-    h1 { font-size: 14px; margin: 0 0 4px; font-weight: 600; }
-    h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
+    /* opens in its own tab (manifest: open_in_tab): a fluid column, not a fixed
+       width - the embedded options dialog was narrower than 400px under display
+       scaling and scrolled sideways */
+    html { background: #1f1f1f; }
+    body { font: 14px "Segoe UI", system-ui, sans-serif; margin: 0 auto;
+           padding: 24px 16px; max-width: 640px; color: #e6e6e6; }
+    h1 { font-size: 20px; margin: 0 0 4px; font-weight: 600; }
+    h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
          color: #9a9a9a; margin: 18px 0 6px; padding-bottom: 3px;
          border-bottom: 1px solid #3a3a3a; }
     .row { margin: 0 0 4px; display: flex; align-items: center; gap: 8px; }
     .row label { flex: 1; }
-    p.help { margin: 0 0 12px; font-size: 11px; line-height: 1.5; color: #9a9a9a; }
-    input[type=text] { width: 150px; font: inherit; padding: 4px 6px;
+    p.help { margin: 0 0 12px; font-size: 12.5px; line-height: 1.5; color: #9a9a9a; }
+    input[type=text] { width: 180px; max-width: 45%; font: inherit; padding: 4px 6px;
       background: #141414; color: #e6e6e6; border: 1px solid #3a3a3a;
       border-radius: 3px; }
     #saved { font-size: 11px; color: #6ea86e; height: 14px; margin-top: 10px; }

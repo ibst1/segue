@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Segue",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Right-click a link and send it to another browser window, or Alt-click to send it to a window you choose once.",
   "icons": {
     "16": "icons/segue-16.png",
@@ -27,7 +27,7 @@
   },
   "options_ui": {
     "page": "options.html",
-    "open_in_tab": false
+    "open_in_tab": true
   },
   "content_scripts": [
     {
