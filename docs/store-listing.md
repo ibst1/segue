@@ -23,8 +23,10 @@ a postal address shown in the developer profile, which is why it was not used.
      shows no Markdown, so drop the `**` and `*`).
    - Category: *Productivity → Workflow & Planning*. Language: English.
    - Store icon: `icons/segue-128.png`.
-   - Screenshots: 1–5, 1280×800 or 640×400 PNG/JPEG. The context menu with the
-     *Send link to window* submenu open is the one that explains the extension.
+   - Screenshots: 1–5, 1280×800 or 640×400 PNG/JPEG.
+     `store/screenshot-1280x800.png` shows the toolbar popup naming a window
+     for Alt-click; a second one with the *Send link to window* submenu open
+     would explain the right-click side.
    - Small promo tile: `store/promo-440x280.png` (required).
    - Homepage / support URL: `https://github.com/ibst1/segue`.
 5. **Privacy** tab:
