@@ -1,4 +1,4 @@
-# Packs the extension for the Edge Add-ons store: dist\segue-<version>.zip
+# Packs the extension for the Chrome Web Store (or Edge Add-ons): dist\segue-<version>.zip
 # with the extension files only - manifest, scripts, pages, icons. Docs,
 # tools, the store folder, git files and this script stay out; the store
 # rejects nothing for extra files, but the package is what gets reviewed and

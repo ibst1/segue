@@ -1,5 +1,6 @@
-# Generates the extension icons (icons\segue-16/32/48/128.png) and the store
-# logo (store\logo-300.png) with System.Drawing - no design tool needed.
+# Generates the extension icons (icons\segue-16/32/48/128.png), the store
+# logo (store\logo-300.png) and the Chrome Web Store small promo tile
+# (store\promo-440x280.png) with System.Drawing - no design tool needed.
 #
 # The picture: two browser windows, the front one offset to the lower right,
 # and an arrow carrying something from the back one to the front one - a link
@@ -71,3 +72,24 @@ function Draw-Icon([int]$size, [string]$path) {
 
 foreach ($n in 16, 32, 48, 128) { Draw-Icon $n (Join-Path $root "icons\segue-$n.png") }
 Draw-Icon 300 (Join-Path $root "store\logo-300.png")
+
+# Chrome Web Store small promo tile, 440x280: the logo on a dark ground (the
+# logo's own blue would vanish on a blue one) and the name beside it.
+function Draw-PromoTile([string]$logo, [string]$path) {
+    $bmp = New-Object System.Drawing.Bitmap 440, 280
+    $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.SmoothingMode = "AntiAlias"
+    $g.TextRenderingHint = "AntiAliasGridFit"
+    $g.Clear([System.Drawing.Color]::FromArgb(255, 15, 23, 42))
+    $img = [System.Drawing.Image]::FromFile($logo)
+    $g.DrawImage($img, 36, 60, 160, 160)
+    $img.Dispose()
+    $white = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
+    $grey = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 203, 213, 225))
+    $g.DrawString("Segue", (New-Object System.Drawing.Font "Segoe UI", 40, ([System.Drawing.FontStyle]::Bold), ([System.Drawing.GraphicsUnit]::Pixel)), $white, 214, 96)
+    $g.DrawString("Send links to`nanother window", (New-Object System.Drawing.Font "Segoe UI", 20, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)), $grey, 216, 148)
+    $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
+    $g.Dispose(); $bmp.Dispose()
+    Write-Host "wrote $path"
+}
+Draw-PromoTile (Join-Path $root "store\logo-300.png") (Join-Path $root "store\promo-440x280.png")
