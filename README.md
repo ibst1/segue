@@ -117,13 +117,15 @@ shows only whether an Alt-click failed to reach the service worker.
 
 ## Publishing
 
-The extension is meant for the Edge Add-ons store, which is the only way to
-install it without *Load unpacked* on every machine.
+The extension is published on the Chrome Web Store, which is the only way to
+install it without *Load unpacked* on every machine. Edge installs from there
+too, once *Allow extensions from other stores* is on.
 
 - `build.ps1` writes the store package to `dist\segue-<version>.zip` (the
   version is read from `manifest.json`; nothing but the extension files goes
   in).
-- `tools\Make-Icons.ps1` regenerates `icons\` and `store\logo-300.png`.
+- `tools\Make-Icons.ps1` regenerates `icons\`, `store\logo-300.png` and the
+  Chrome promo tile `store\promo-440x280.png`.
 - `docs\store-listing.md` holds the listing texts, the permission
-  justifications for the reviewers and the submission checklist;
+  justifications for the reviewers and the submission checklists;
   `PRIVACY.md` is the privacy statement the listing links to.

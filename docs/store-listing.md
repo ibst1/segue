@@ -1,9 +1,60 @@
-# Segue — Edge Add-ons listing
+# Segue — store listings
 
-Everything the Partner Center submission form asks for, ready to paste. The
-package itself comes from `build.ps1`.
+Everything the store submission forms ask for, ready to paste. The package
+itself comes from `build.ps1`, and the same zip goes to both stores.
 
-## Submission checklist
+Segue is published on the **Chrome Web Store**. Edge installs from it once
+*Allow extensions from other stores* is on (Edge asks the first time).
+The Edge Add-ons route is kept below for reference; its registration form wants
+a postal address shown in the developer profile, which is why it was not used.
+
+## Chrome Web Store checklist
+
+1. **Account**: https://chrome.google.com/webstore/devconsole with a Google
+   account that has 2-step verification on. One-time registration fee of
+   USD 5. Verify the contact e-mail under *Account*.
+2. **Trader status** (*Account*, EU Digital Services Act): declare
+   **non-trader** — a free extension published by a private person. Traders
+   must show a postal address on the listing; non-traders do not.
+3. **Package**: run `.\build.ps1`, then *New item* → upload
+   `dist\segue-<version>.zip`.
+4. **Store listing** tab:
+   - Description: the *Detailed description* below (plain text; the store
+     shows no Markdown, so drop the `**` and `*`).
+   - Category: *Productivity → Workflow & Planning*. Language: English.
+   - Store icon: `icons/segue-128.png`.
+   - Screenshots: 1–5, 1280×800 or 640×400 PNG/JPEG. The context menu with the
+     *Send link to window* submenu open is the one that explains the extension.
+   - Small promo tile: `store/promo-440x280.png` (required).
+   - Homepage / support URL: `https://github.com/ibst1/segue`.
+5. **Privacy** tab:
+   - Single purpose: see *Single purpose* below.
+   - Permission justifications: one box per permission, plus *host
+     permission* for the content script — the texts under *Permission
+     justifications*, split up.
+   - Remote code: **No, I am not using remote code**.
+   - Data usage: tick nothing (no data collected), then tick all three
+     certifications (not sold, not used for unrelated purposes, not used for
+     credit).
+   - Privacy policy URL: see below.
+6. **Distribution** tab: *Public*, or *Unlisted* (installable through the
+   link only, not searchable — enough for "install it on every machine").
+   Regions: all. Free.
+7. **Submit for review**. `<all_urls>` content scripts get an in-depth review,
+   so expect days rather than hours. The listing then appears at
+   `https://chromewebstore.google.com/detail/<id>`.
+
+A new version: bump `version` in `manifest.json`, run `build.ps1`, *Package* →
+*Upload new package*, submit. The store rejects a version that is not higher
+than the published one.
+
+### Single purpose
+
+> Segue moves links and tabs between browser windows: right-click or Alt-click
+> a link to open it in another window you choose, and move the current tab to
+> another window with the keyboard.
+
+## Edge Add-ons checklist (not used)
 
 1. **Account**: a Microsoft Partner Center account with the *Microsoft Edge*
    program enrolled (free, no fee). Sign in at
@@ -28,7 +79,7 @@ A new version is the same form with a new package: bump `version` in
 
 ### Privacy policy URL
 
-Partner Center requires a public URL. The repository is public, so
+Both stores require a public URL. The repository is public, so
 `PRIVACY.md` serves directly:
 
     https://github.com/ibst1/segue/blob/main/PRIVACY.md
