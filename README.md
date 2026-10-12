@@ -9,7 +9,8 @@ on each machine.
 
 1. Open `edge://extensions`
 2. Turn on **Developer mode**
-3. **Load unpacked**, and point it at this folder
+3. **Load unpacked**, and point it at this folder (or at the unpacked zip from
+   the latest [release](https://github.com/ibst1/segue/releases/latest))
 4. Disable *Open in specific window* if it is installed — otherwise two
    near-identical rows appear in the context menu
 
@@ -137,6 +138,9 @@ too, once *Allow extensions from other stores* is on.
 - `build.ps1` writes the store package to `dist\segue-<version>.zip` (the
   version is read from `manifest.json`; nothing but the extension files goes
   in).
+- Pushing a tag `v<version>` matching `manifest.json` (e.g. `v1.4.0`) builds
+  the same zip on GitHub Actions and attaches it to a release; that zip is
+  the one to upload to the store.
 - `tools\Make-Icons.ps1` regenerates `icons\`, `store\logo-300.png` and the
   Chrome promo tile `store\promo-440x280.png`.
 - `docs\store-listing.md` holds the listing texts, the permission

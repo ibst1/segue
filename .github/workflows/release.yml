@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # the tag names the version the store sees: v1.4.0 must match manifest.json
+      - name: Check tag against manifest version
+        shell: powershell
+        run: |
+          $version = (Get-Content manifest.json -Raw -Encoding UTF8 | ConvertFrom-Json).version
+          if ("v$version" -ne "${{ github.ref_name }}") {
+            throw "tag ${{ github.ref_name }} does not match manifest version $version"
+          }
+
+      - name: Build zip
+        shell: powershell
+        run: .\build.ps1
+
+      - name: Create release and attach zip
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/segue-*.zip
+          generate_release_notes: true
